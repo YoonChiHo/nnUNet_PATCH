@@ -9,7 +9,7 @@ git config --global user.password "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"
 # Push
 git add *
 git commit -m ${today}'_update'
-git push https://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@github.com/YoonChiHo/nnUNet_PATCH.git +main
+git push https://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@github.com/YoonChiHo/nnUNet_PATCH.git main # +강제
 
 echo PUSH ${today}_update Completed
 
