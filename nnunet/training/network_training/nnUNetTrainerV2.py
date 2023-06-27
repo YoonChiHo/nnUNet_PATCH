@@ -110,8 +110,8 @@ class nnUNetTrainerV2(nnUNetTrainer):
                     deep_supervision_scales=self.deep_supervision_scales,
                     pin_memory=self.pin_memory,
                     use_nondetMultiThreadedAugmenter=False,
-                    #seeds_train=[1234] * self.data_aug_params['num_threads'], # For Randomness Fix
-                    #seeds_val=[1234] * self.data_aug_params['num_threads'],
+                    # seeds_train=[1234] * self.data_aug_params['num_threads'], # For Randomness Fix
+                    # seeds_val=[1234] * self.data_aug_params['num_threads'],
                 )
                 self.print_to_log_file("TRAINING KEYS:\n %s" % (str(self.dataset_tr.keys())),
                                        also_print_to_console=False)
@@ -125,7 +125,7 @@ class nnUNetTrainerV2(nnUNetTrainer):
             self.network = Static_UNet(num_classes=self.num_classes, in_channels=self.num_input_channels).to('cuda')
             self.initialize_optimizer_and_scheduler()
 
-            assert isinstance(self.network, (SegmentationNetwork, nn.DataParallel))
+            #assert isinstance(self.network, (SegmentationNetwork, nn.DataParallel))
         else:
             self.print_to_log_file('self.was_initialized is True, not running self.initialize again')
         self.was_initialized = True
