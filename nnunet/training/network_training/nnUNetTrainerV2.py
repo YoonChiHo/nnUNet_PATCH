@@ -109,7 +109,9 @@ class nnUNetTrainerV2(nnUNetTrainer):
                     self.data_aug_params,
                     deep_supervision_scales=self.deep_supervision_scales,
                     pin_memory=self.pin_memory,
-                    use_nondetMultiThreadedAugmenter=False
+                    use_nondetMultiThreadedAugmenter=False,
+                    #seeds_train=[1234] * self.data_aug_params['num_threads'], # For Randomness Fix
+                    #seeds_val=[1234] * self.data_aug_params['num_threads'],
                 )
                 self.print_to_log_file("TRAINING KEYS:\n %s" % (str(self.dataset_tr.keys())),
                                        also_print_to_console=False)

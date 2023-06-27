@@ -15,6 +15,7 @@
 from collections import OrderedDict
 import numpy as np
 from multiprocessing import Pool
+import random
 
 from batchgenerators.dataloading.data_loader import SlimDataLoaderBase
 
@@ -155,7 +156,7 @@ def crop_2D_image_force_fg(img, crop_size, valid_voxels):
 class DataLoader3D(SlimDataLoaderBase):
     def __init__(self, data, patch_size, final_patch_size, batch_size, has_prev_stage=False,
                  oversample_foreground_percent=0.0, memmap_mode="r", pad_mode="edge", pad_kwargs_data=None,
-                 pad_sides=None, patch_select = None):
+                 pad_sides=None, patch_select = [0, 0]):
                  
         """
         This is the basic data loader for 3D networks. It uses preprocessed data as produced by my (Fabian) preprocessing.
@@ -182,12 +183,7 @@ class DataLoader3D(SlimDataLoaderBase):
         """
         super(DataLoader3D, self).__init__(data, batch_size, None)
         # PATCH Setting
-        if patch_select is not None:
-            self.patch_select = patch_select
-        else:
-            self.patch_select = [0, 0]
-
-        print(f'patch_select: Positive {patch_select[0]} / Negative {patch_select[0]}')
+        self.patch_select = patch_select # [(#of positive patch), (# of negative_patch)]
 
         if pad_kwargs_data is None:
             pad_kwargs_data = OrderedDict()
@@ -238,7 +234,7 @@ class DataLoader3D(SlimDataLoaderBase):
         # else:
         #     self.modified_batch_size = int(self.batch_size/(self.positive_size+self.negative_size))*(self.positive_size+self.negative_size)
         
-        if self.patch_select[0] > 0 or self.patch_select[1] > 0:
+        if self.patch_select is not None:
             self.modified_batch_size = int(self.batch_size/(self.patch_select[0]+self.patch_select[1]))
             if self.modified_batch_size < 1: self.modified_batch_size = 1
             
@@ -291,7 +287,7 @@ class DataLoader3D(SlimDataLoaderBase):
     
     def generate_train_batch(self):
         
-        if self.patch_select[0] > 0 or self.patch_select[1] > 0:
+        if self.patch_select is not None:
             selected_keys = np.random.choice(self.list_of_keys, self.modified_batch_size, True, None)
         else:
             selected_keys = np.random.choice(self.list_of_keys, self.batch_size, True, None)
@@ -363,8 +359,7 @@ class DataLoader3D(SlimDataLoaderBase):
             lb_z = - need_to_pad[2] // 2
             ub_z = shape[2] + need_to_pad[2] // 2 + need_to_pad[2] % 2 - self.patch_size[2]
 
-            if self.patch_select[0] > 0 or self.patch_select[1] > 0:
-                import random
+            if self.patch_select is not None:
                 # Label 위치 정보 
                 foreground_classes = np.array(
                         [i for i in properties['class_locations'].keys() if len(properties['class_locations'][i]) != 0])
