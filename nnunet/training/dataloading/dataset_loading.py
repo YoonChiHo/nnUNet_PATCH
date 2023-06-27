@@ -156,7 +156,7 @@ def crop_2D_image_force_fg(img, crop_size, valid_voxels):
 class DataLoader3D(SlimDataLoaderBase):
     def __init__(self, data, patch_size, final_patch_size, batch_size, has_prev_stage=False,
                  oversample_foreground_percent=0.0, memmap_mode="r", pad_mode="edge", pad_kwargs_data=None,
-                 pad_sides=None, patch_select = [0, 0]):
+                 pad_sides=None, patch_select = None):
                  
         """
         This is the basic data loader for 3D networks. It uses preprocessed data as produced by my (Fabian) preprocessing.
@@ -241,7 +241,7 @@ class DataLoader3D(SlimDataLoaderBase):
             data_shape = (self.modified_batch_size*(self.patch_select[0]+self.patch_select[1]), num_color_channels, *self.patch_size)
             seg_shape = (self.modified_batch_size*(self.patch_select[0]+self.patch_select[1]), num_seg, *self.patch_size)
         else:
-            data_shape = (self.batch_size, *self.patch_size)
+            data_shape = (self.batch_size, num_color_channels, *self.patch_size)
             seg_shape = (self.batch_size, num_seg, *self.patch_size)
 
         return data_shape, seg_shape

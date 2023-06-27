@@ -101,7 +101,6 @@ class nnUNetTrainerV2(nnUNetTrainer):
                     print(
                         "INFO: Not unpacking data! Training may be slow due to that. Pray you are not using 2d or you "
                         "will wait all winter for your model to finish!")
-
                 self.tr_gen, self.val_gen = get_moreDA_augmentation(
                     self.dl_tr, self.dl_val,
                     self.data_aug_params[
@@ -110,8 +109,8 @@ class nnUNetTrainerV2(nnUNetTrainer):
                     deep_supervision_scales=self.deep_supervision_scales,
                     pin_memory=self.pin_memory,
                     use_nondetMultiThreadedAugmenter=False,
-                    # seeds_train=[1234] * self.data_aug_params['num_threads'], # For Randomness Fix
-                    # seeds_val=[1234] * self.data_aug_params['num_threads'],
+                    seeds_train=[1234] * self.data_aug_params['num_threads'], # For Randomness Fix
+                    seeds_val=[1234] * self.data_aug_params['num_threads'],
                 )
                 self.print_to_log_file("TRAINING KEYS:\n %s" % (str(self.dataset_tr.keys())),
                                        also_print_to_console=False)
