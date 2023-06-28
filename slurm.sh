@@ -26,7 +26,9 @@ GPULIST=\"device=${UUIDLIST}\"
 
 # Our Docker Setting
 docker build -t nnunet_batch .
-docker run --rm --name nnunet_batch_run2 --shm-size 16G --gpus ${GPULIST} -v /home2/ych000/data/nnUNet_PATCH/nnUNet_trained_models:/data/nnUNet/nnUNet_trained_models -v /home2/ych000/data/nnUNet_PATCH/nnUNet_preprocessed:/data/nnUNet/nnUNet_preprocessed -v /home2/ych000/data/nnUNet_PATCH/nnUNet_raw_data_base:/data/nnUNet/nnUNet_raw_data_base nnunet_batch
+docker stop nnunet_batch_run_1
+docker rm nnunet_batch_run_1
+docker run --rm --name nnunet_batch_run_1 --shm-size 16G --gpus ${GPULIST} -v /home2/ych000/data/nnUNet_PATCH/nnUNet_trained_models:/data/nnUNet/nnUNet_trained_models -v /home2/ych000/data/nnUNet_PATCH/nnUNet_preprocessed:/data/nnUNet/nnUNet_preprocessed -v /home2/ych000/data/nnUNet_PATCH/nnUNet_raw_data_base:/data/nnUNet/nnUNet_raw_data_base nnunet_batch
 
 
 ##sinfo -O "Partition:12,Nodes:5,Nodelist:20,Gres:22,GresUsed:34,features_act:25"

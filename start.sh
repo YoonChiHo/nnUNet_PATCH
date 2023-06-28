@@ -20,6 +20,8 @@ export RESULTS_FOLDER="/data/nnUNet/nnUNet_trained_models"
 #3. --patch_select에 원하는 patch 개수 설정 (positive, negative 순으로 설정)
 
 #slurm-47866
-nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name 230627_original --deterministic
+#nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name 230627_original --deterministic
+#nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name 230627_original_randomness --deterministic
 #slurm-47867
-#nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name 230627_1p1n --patch_select 1 1 --deterministic
+nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name 230627_original_norandom2 --deterministic
+#nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name 230627_1p1n_randomness --patch_select 1 1 --deterministic

@@ -15,7 +15,7 @@
 from collections import OrderedDict
 import numpy as np
 from multiprocessing import Pool
-import random
+#import random
 
 from batchgenerators.dataloading.data_loader import SlimDataLoaderBase
 

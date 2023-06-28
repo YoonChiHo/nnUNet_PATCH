@@ -196,12 +196,12 @@ def get_moreDA_augmentation(dataloader_train, dataloader_val, patch_size, params
         if NonDetMultiThreadedAugmenter is None:
             raise RuntimeError('NonDetMultiThreadedAugmenter is not yet available')
         batchgenerator_val = NonDetMultiThreadedAugmenter(dataloader_val, val_transforms,
-                                                          max(params.get('num_threads') // 1, 1),
+                                                          max(params.get('num_threads') // 2, 1),
                                                           params.get("num_cached_per_thread"),
                                                           seeds=seeds_val, pin_memory=pin_memory)
     else:
         batchgenerator_val = MultiThreadedAugmenter(dataloader_val, val_transforms,
-                                                    max(params.get('num_threads') // 1, 1),
+                                                    max(params.get('num_threads') // 2, 1),
                                                     params.get("num_cached_per_thread"),
                                                     seeds=seeds_val, pin_memory=pin_memory)
     # batchgenerator_val = SingleThreadedAugmenter(dataloader_val, val_transforms)
