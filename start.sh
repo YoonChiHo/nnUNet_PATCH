@@ -24,10 +24,12 @@ export RESULTS_FOLDER="/data/nnUNet/nnUNet_trained_models"
 #nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name ${today}_original --deterministic
 #nnUNet_train 3d_fullres nnUNetTrainerV2 601 0 --result_name ${today}_3p7n --patch_select 3 7 --deterministic
 
-nnUNet_train 3d_fullres nnUNetTrainerV2 602 0 --result_name ${today}_1p2n --patch_select 1 2 --deterministic   #slurm-48659
-#nnUNet_train 3d_fullres nnUNetTrainerV2 602 0 --result_name ${today}_2p1n --patch_select 2 1 --deterministic  #slurm-48639
+#nnUNet_train 3d_fullres nnUNetTrainerV2 602 0 --result_name ${today}_1p2n --patch_select 1 2 --deterministic   #slurm-48659#
+#nnUNet_train 3d_fullres nnUNetTrainerV2 602 0 --result_name ${today}_2p1n --patch_select 2 1 --deterministic  #slurm-48639#
 
 #nnUNet_train 3d_fullres nnUNetTrainerV2 603 0 --result_name ${today}_1p1n --patch_select 1 1 --deterministic 
-#nnUNet_train 3d_fullres nnUNetTrainerV2 603 0 --result_name ${today}_1p1n_500e --patch_select 1 1 --deterministic #slurm-48657
-#nnUNet_train 3d_fullres nnUNetTrainerV2 603 0 --result_name ${today}_1p1n_bs4 --patch_select 1 1 --deterministic #slurm-48425 
+#nnUNet_train 3d_fullres nnUNetTrainerV2 603 0 --result_name ${today}_1p1n_500e --patch_select 1 1 --deterministic #slurm-48657#
+nnUNet_train 3d_fullres nnUNetTrainerV2 603 0 --result_name ${today}_1p1n_1000e --patch_select 1 1 --deterministic #slurm-48425 
 #nnUNet_train 3d_fullres nnUNetTrainerV2 603 0 --result_name ${today}_2p1n --patch_select 2 1 --deterministic
+
+#PAH
