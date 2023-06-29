@@ -131,6 +131,11 @@ def main():
         task_id = int(task)
         task = convert_id_to_task_name(task_id)
 
+    if result_name is not None:
+        print(f"Result Folder is {result_name}")
+    else:
+        print(f"Result Folder is {task}")
+
     if fold == 'all':
         pass
     else:

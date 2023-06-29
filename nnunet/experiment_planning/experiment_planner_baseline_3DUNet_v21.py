@@ -115,43 +115,7 @@ class ExperimentPlanner3D_v21(ExperimentPlanner):
         shape_must_be_divisible_by = get_pool_and_conv_props(current_spacing, input_patch_size,
                                                              self.unet_featuremap_min_edge_length,
                                                              self.unet_max_numpool)
-        
-        # we compute as if we were using only 30 feature maps. We can do that because fp16 training is the standard
-        # now. That frees up some space. The decision to go with 32 is solely due to the speedup we get (non-multiples
-        # of 8 are not supported in nvidia amp)
-        ref = Generic_UNet.use_this_for_batch_size_computation_3D * self.unet_base_num_features / \
-              Generic_UNet.BASE_NUM_FEATURES_3D
-        here = Generic_UNet.compute_approx_vram_consumption(new_shp, network_num_pool_per_axis,
-                                                            self.unet_base_num_features,
-                                                            self.unet_max_num_filters, num_modalities,
-                                                            num_classes,
-                                                            pool_op_kernel_sizes, conv_per_stage=self.conv_per_stage)
-        while here > ref:
-            axis_to_be_reduced = np.argsort(new_shp / new_median_shape)[-1]
-
-            tmp = deepcopy(new_shp)
-            tmp[axis_to_be_reduced] -= shape_must_be_divisible_by[axis_to_be_reduced]
-            _, _, _, _, shape_must_be_divisible_by_new = \
-                get_pool_and_conv_props(current_spacing, tmp,
-                                        self.unet_featuremap_min_edge_length,
-                                        self.unet_max_numpool,
-                                        )
-            new_shp[axis_to_be_reduced] -= shape_must_be_divisible_by_new[axis_to_be_reduced]
-
-            # we have to recompute numpool now:
-            network_num_pool_per_axis, pool_op_kernel_sizes, conv_kernel_sizes, new_shp, \
-            shape_must_be_divisible_by = get_pool_and_conv_props(current_spacing, new_shp,
-                                                                 self.unet_featuremap_min_edge_length,
-                                                                 self.unet_max_numpool,
-                                                                 )
-
-            here = Generic_UNet.compute_approx_vram_consumption(new_shp, network_num_pool_per_axis,
-                                                                self.unet_base_num_features,
-                                                                self.unet_max_num_filters, num_modalities,
-                                                                num_classes, pool_op_kernel_sizes,
-                                                                conv_per_stage=self.conv_per_stage)
-            #print(new_shp)
-        #print(here, ref)
+                                                             
 
         # CustomSetting
         if self.target_patch_size != None:
@@ -172,11 +136,54 @@ class ExperimentPlanner3D_v21(ExperimentPlanner):
                                                                         self.unet_featuremap_min_edge_length,
                                                                         self.unet_max_numpool,
                                                                         )
+        
+        
+        if self.target_patch_size == None:
+            # we compute as if we were using only 30 feature maps. We can do that because fp16 training is the standard
+            # now. That frees up some space. The decision to go with 32 is solely due to the speedup we get (non-multiples
+            # of 8 are not supported in nvidia amp)
+            ref = Generic_UNet.use_this_for_batch_size_computation_3D * self.unet_base_num_features / \
+                Generic_UNet.BASE_NUM_FEATURES_3D
+            here = Generic_UNet.compute_approx_vram_consumption(new_shp, network_num_pool_per_axis,
+                                                                self.unet_base_num_features,
+                                                                self.unet_max_num_filters, num_modalities,
+                                                                num_classes,
+                                                                pool_op_kernel_sizes, conv_per_stage=self.conv_per_stage)
+            while here > ref:
+                axis_to_be_reduced = np.argsort(new_shp / new_median_shape)[-1]
+
+                tmp = deepcopy(new_shp)
+                tmp[axis_to_be_reduced] -= shape_must_be_divisible_by[axis_to_be_reduced]
+                _, _, _, _, shape_must_be_divisible_by_new = \
+                    get_pool_and_conv_props(current_spacing, tmp,
+                                            self.unet_featuremap_min_edge_length,
+                                            self.unet_max_numpool,
+                                            )
+                new_shp[axis_to_be_reduced] -= shape_must_be_divisible_by_new[axis_to_be_reduced]
+
+                # we have to recompute numpool now:
+                network_num_pool_per_axis, pool_op_kernel_sizes, conv_kernel_sizes, new_shp, \
+                shape_must_be_divisible_by = get_pool_and_conv_props(current_spacing, new_shp,
+                                                                    self.unet_featuremap_min_edge_length,
+                                                                    self.unet_max_numpool,
+                                                                    )
+
+                here = Generic_UNet.compute_approx_vram_consumption(new_shp, network_num_pool_per_axis,
+                                                                    self.unet_base_num_features,
+                                                                    self.unet_max_num_filters, num_modalities,
+                                                                    num_classes, pool_op_kernel_sizes,
+                                                                    conv_per_stage=self.conv_per_stage)
+                #print(new_shp)
+            #print(here, ref)
                     
+        # CustomSetting
         input_patch_size = new_shp
 
+        
         if self.target_batch_size != None:
             batch_size = self.target_batch_size
+        elif self.target_patch_size != None:
+            batch_size = 2
         else:
             batch_size = Generic_UNet.DEFAULT_BATCH_SIZE_3D  # This is what wirks with 128**3
             batch_size = int(np.floor(max(ref / here, 1) * batch_size))

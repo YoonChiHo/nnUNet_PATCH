@@ -236,13 +236,17 @@ class DataLoader3D(SlimDataLoaderBase):
         
         if self.patch_select is not None:
             self.modified_batch_size = int(self.batch_size/(self.patch_select[0]+self.patch_select[1]))
+            #self.modified_batch_size = 4
             if self.modified_batch_size < 1: self.modified_batch_size = 1
             
             data_shape = (self.modified_batch_size*(self.patch_select[0]+self.patch_select[1]), num_color_channels, *self.patch_size)
             seg_shape = (self.modified_batch_size*(self.patch_select[0]+self.patch_select[1]), num_seg, *self.patch_size)
+            
+            print(f"BATCH SIZE: {self.batch_size} / Modified BATCH SIZE: {self.modified_batch_size}\nPATCH SIZE: {self.patch_size}  / PATCH SELECT: P{self.patch_select[0]} N{self.patch_select[1]}")
         else:
             data_shape = (self.batch_size, num_color_channels, *self.patch_size)
             seg_shape = (self.batch_size, num_seg, *self.patch_size)
+            print(f"BATCH SIZE: {self.batch_size} \nPATCH SIZE: {self.patch_size} ")
 
         return data_shape, seg_shape
 
